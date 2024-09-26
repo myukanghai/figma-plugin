@@ -4,6 +4,8 @@
 <h2>보고서 서버를 위한 FIGMA 툴</h2>
 <p>페이지를 선택한 상태로 사용해야합니다.</p>
 <p>보고서 서버를 위해 FIGMA 툴을 사용하여 json파일을 생성합니다.</p>
+
+<p>page.json export 규칙은 d-{객체이름}-{객체타입}</p>
     <p id="xy-viewer"></p>
 <div>
     <p id="widthHeight-viewer"></p>
@@ -12,17 +14,41 @@
     <p id="color-viewer"></p>
 </div>
 
+<div>
+<div> Node Selector</div>
+    <p id="Node Selector">
+    <!-- input-->
+    <input id="nodeSelector">
+    <button id="node-selector">node selector</button>
+</div>
+
+<div>
+    <div> Default Font Selector </div>
+    <p id="Default Font Selector">
+        <!-- input-->
+        <input id="fontSelector">
+        <button id="default-font-selector">default font selector</button>
+    </p>
+</div>
+
+<div>
+    <p id="simple replacer">
+        <!-- input-->
+        <input id="origin">
+        <input id="tobe">
+        <button id="simple-replacer">simple replacer</button>
+    </p>
+</div>
+
 <button id="export-pdf">export pdf</button>
 <button id="export-json">export json</button>
 
 <div id="json-viewer">viewer</div>
 <div id="sample-dataMapper">Sample Template</div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@textea/json-viewer@3"></script>
 
 <script>
-
 
 onmessage = (event) => {
   if (event.data.pluginMessage?.pluginMessage?.type){
@@ -60,10 +86,10 @@ onmessage = (event) => {
         data = event.data.pluginMessage.pluginMessage.data.bytes;
         
         // download
-        var blob = new Blob([data], { type: 'application/pdf' });
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url;
+          const blob = new Blob([data], {type: 'application/pdf'});
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
         a.download = event.data.pluginMessage.pluginMessage.data.name  + '.pdf';
         a.click();
         break;
@@ -76,5 +102,16 @@ document.getElementById('export-pdf').onclick = () => {
   parent.postMessage({ pluginMessage: { type: 'export-pdf' } }, '*')
 }
 
+document.getElementById("simple-replacer").onclick = () => {
+    parent.postMessage({ pluginMessage: { type: 'simple-replacer', data: { origin: document.getElementById('origin').value, tobe: document.getElementById('tobe').value } } }, '*')
+}
+
+document.getElementById("default-font-selector").onclick = () => {
+    parent.postMessage({ pluginMessage: { type: 'default-font-selector', data: { font: document.getElementById('fontSelector').value } } }, '*')
+}
+
+document.getElementById("node-selector").onclick = () => {
+    parent.postMessage({ pluginMessage: { type: 'node-selector', data: { node: document.getElementById('nodeSelector').value } } }, '*')
+}
+
 </script>
-</html>
